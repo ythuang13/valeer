@@ -26,17 +26,20 @@ class _ResultPageState extends State<ResultPage> {
     super.initState();
 
     // inference
-    prediction();
+    Future<double> output = prediction();
+    output.then((value) => {
+      print(value)
+    }).catchError((error) => print(error));
 
     winChance = Random().nextDouble();
 
   }
 
-  Future<void> prediction() async {
+  Future<double> prediction() async {
     final interpreter = await Interpreter.fromAsset('models/model_Bind.tflite');
 
     // For ex: if input tensor shape [1,5] and type is float32
-    var input = [[0.0, 1.0]];
+    var input = [List<double>.generate(34, (i) => 0.0)];
 
     // if output tensor shape [1,2] and type is float32
     var output = List.filled(1*2, 0).reshape([1,2]);
@@ -44,9 +47,12 @@ class _ResultPageState extends State<ResultPage> {
     // inference
     interpreter.run(input, output);
 
-    // print the output
-    print("test");
     print(output);
+    // process output
+
+
+    // print the output
+    return output[0];
   }
 
   @override
