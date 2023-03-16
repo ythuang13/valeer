@@ -27,19 +27,28 @@ class _ResultPageState extends State<ResultPage> {
 
     // inference
     Future<double> output = prediction();
-    output.then((value) => {
-      print(value)
-    }).catchError((error) => print(error));
-
-    winChance = Random().nextDouble();
+    output.then((value) {
+      print(value);
+      winChance = value;
+      setState(() {});
+    }).catchError((error) {
+      print(error);
+    });
 
   }
 
   Future<double> prediction() async {
-    final interpreter = await Interpreter.fromAsset('models/model_Bind.tflite');
-
-    // For ex: if input tensor shape [1,5] and type is float32
+    var data = widget.data;
+    // process input
+    final map = valorantMaps[data["map"]![0]];
     var input = [List<double>.generate(34, (i) => 0.0)];
+
+    for (int i = 0; i < 5; i++) {
+      input[0][data["team1"]![i]] += 1.0;
+      input[0][data["team2"]![i] + 17] += 1.0;
+    }
+
+    final interpreter = await Interpreter.fromAsset('models/model_$map.tflite');
 
     // if output tensor shape [1,2] and type is float32
     var output = List.filled(1*2, 0).reshape([1,2]);
@@ -47,12 +56,8 @@ class _ResultPageState extends State<ResultPage> {
     // inference
     interpreter.run(input, output);
 
-    print(output);
-    // process output
-
-
-    // print the output
-    return output[0];
+    // return win chance
+    return output[0][0];
   }
 
   @override
@@ -158,6 +163,8 @@ class _ResultPageState extends State<ResultPage> {
       ),
     );
   }
+
+
 
   void previousPage() {
     Navigator.pop(context);
