@@ -1,6 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
-import 'package:tflite/tflite.dart';
+import 'package:tflite_flutter/tflite_flutter.dart';
 import 'dart:math';
+
 
 
 import './setting.dart';
@@ -23,13 +26,27 @@ class _ResultPageState extends State<ResultPage> {
     super.initState();
 
     // inference
+    prediction();
 
     winChance = Random().nextDouble();
 
   }
 
-  Future<void> _initTFLite() async {
+  Future<void> prediction() async {
+    final interpreter = await Interpreter.fromAsset('models/model_Bind.tflite');
 
+    // For ex: if input tensor shape [1,5] and type is float32
+    var input = [[0.0, 1.0]];
+
+    // if output tensor shape [1,2] and type is float32
+    var output = List.filled(1*2, 0).reshape([1,2]);
+
+    // inference
+    interpreter.run(input, output);
+
+    // print the output
+    print("test");
+    print(output);
   }
 
   @override
