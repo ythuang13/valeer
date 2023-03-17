@@ -114,7 +114,7 @@ class _Team1PageState extends State<Team1Page> {
                             children: [
                               Expanded(
                                   child: Image.asset(
-                                      "assets/${valorantAgents[index]}_icon.webp")),
+                                      "assets/agents/${valorantAgents[index]}_icon.webp")),
                               Text(valorantAgents[index],
                                   style: TextStyle(
                                       fontSize: 18,

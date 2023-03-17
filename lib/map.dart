@@ -122,7 +122,7 @@ class _MapPage extends State<MapPage> {
                             children: [
                               Expanded(
                                   child: Image.asset(
-                                      "assets/${valorantMaps[index]}.png")),
+                                      "assets/maps/${valorantMaps[index]}.png")),
                               Text(valorantMaps[index],
                                   style: TextStyle(
                                       fontSize: 18,
