@@ -53,8 +53,8 @@ flutter_native_splash:
 #    image: assets/valeer_logo.png
 
   # Splash screen background color.
-    color: "#1f1f1f"
-    image: assets/splash.png
+    color: "#F24251"
+    image: assets/valeer_logo.png
 
   # App icon background color.
   #icon_background_color: "#111111"
