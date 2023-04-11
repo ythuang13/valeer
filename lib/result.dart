@@ -48,6 +48,19 @@ class _ResultPageState extends State<ResultPage> {
       input[0][data["team2"]![i] + 17] += 1.0;
     }
 
+    // check if same team comp, if true, return 0.5
+    bool match = true;
+    for (int num in data["team1"]!) {
+      List<int> team2 = data["team2"]!;
+      if (!(team2.contains(num))) {
+        match = false;
+        break;
+      }
+    }
+    if (match) {
+      return 0.5;
+    }
+
     final interpreter = await Interpreter.fromAsset('models/model_$map.tflite');
 
     // if output tensor shape [1,2] and type is float32
