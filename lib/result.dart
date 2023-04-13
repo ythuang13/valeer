@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:tflite_flutter/tflite_flutter.dart';
 import 'dart:math';
 
-
-
 import './setting.dart';
 
 class ResultPage extends StatefulWidget {
@@ -34,7 +32,6 @@ class _ResultPageState extends State<ResultPage> {
     }).catchError((error) {
       print(error);
     });
-
   }
 
   Future<double> prediction() async {
@@ -64,7 +61,7 @@ class _ResultPageState extends State<ResultPage> {
     final interpreter = await Interpreter.fromAsset('models/model_$map.tflite');
 
     // if output tensor shape [1,2] and type is float32
-    var output = List.filled(1*2, 0).reshape([1,2]);
+    var output = List.filled(1 * 2, 0).reshape([1, 2]);
 
     // inference
     interpreter.run(input, output);
@@ -144,30 +141,37 @@ class _ResultPageState extends State<ResultPage> {
                 ),
                 Expanded(
                     flex: 75,
-                    child: Column(
-                      children: [
-                        Text(valorantMaps[widget.data["map"]![0]]),
-                        Column(
-                          children: [
-                            const Text("Team 1: "),
-                            for (var i in widget.data["team1"]!)
-                              Text(
-                                valorantAgents[i],
-                                style: const TextStyle(fontSize: 25),
-                              )
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            const Text("Team 2: "),
-                            for (var i in widget.data["team2"]!)
-                              Text(
-                                valorantAgents[i],
-                                style: const TextStyle(fontSize: 25),
-                              )
-                          ],
-                        ),
-                      ],
+                    child: Container(
+                      margin: const EdgeInsets.only(
+                          left: 20, top: 5, right: 20, bottom: 10),
+                      decoration: BoxDecoration(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(10)),
+                          image: DecorationImage(
+                              image: AssetImage(
+                                  "assets/maps/${valorantMaps[widget.data["map"]![0]]}.png"),
+                              fit: BoxFit.cover)),
+                      child: Column(
+                        children: [
+                          Expanded(
+                            flex: 45,
+                            child: showTeamComp(widget.data['team1']!),
+                          ),
+                          const Expanded(
+                              flex: 10,
+                              child: Text(
+                                  "VS",
+                                 style: TextStyle(
+                                   color: backgroundColor,
+                                   fontWeight: FontWeight.w900
+                                 ),
+                              )),
+                          Expanded(
+                            flex: 45,
+                            child: showTeamComp(widget.data['team2']!),
+                          ),
+                        ],
+                      ),
                     ))
               ],
             ),
@@ -177,7 +181,57 @@ class _ResultPageState extends State<ResultPage> {
     );
   }
 
+  Column showTeamComp(List<int> teamComp) {
+    teamComp.sort();
 
+    return Column(
+      children: [
+        Expanded(
+          flex:50,
+          child: Center(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                agentContainer("assets/agents/${valorantAgents[teamComp[0]]}_icon.webp"),
+                agentContainer("assets/agents/${valorantAgents[teamComp[1]]}_icon.webp"),
+                agentContainer("assets/agents/${valorantAgents[teamComp[2]]}_icon.webp"),
+
+              ],
+            ),
+          ),
+        ),
+        Expanded(
+          flex: 50,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              agentContainer("assets/agents/${valorantAgents[teamComp[3]]}_icon.webp"),
+              agentContainer("assets/agents/${valorantAgents[teamComp[4]]}_icon.webp"),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Container agentContainer(String asset) {
+    return Container(
+      decoration: BoxDecoration(
+        color: primaryColor,
+        border: Border.all(
+          color: primaryColor,
+          width: 1,
+        ),
+        borderRadius: BorderRadius.circular(5),
+      ),
+      margin: const EdgeInsets.all(5),
+      padding: const EdgeInsets.all(1),
+      child: Center(
+          child: Column(
+        children: [Expanded(child: Image.asset(asset))],
+      )),
+    );
+  }
 
   void previousPage() {
     Navigator.pop(context);
